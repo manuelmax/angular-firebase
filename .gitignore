@@ -12,6 +12,7 @@
 
 # Environments
 src/environments/environment.ts
+src/environments/environment.ts.dev
 # profiling files
 chrome-profiler-events*.json
 
