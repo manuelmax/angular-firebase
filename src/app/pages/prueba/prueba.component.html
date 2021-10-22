@@ -1,0 +1,26 @@
+<p>prueba works!</p>
+<form action="" class="" [formGroup]="formulario" (ngSubmit)="new_prueba()">
+  <div class="row">
+    <div class="col">
+      <input type="text" class="form-control" placeholder="code" formControlName="code">
+    </div>
+    <div class="col">
+      <input type="text" class="form-control" placeholder="nombre" formControlName="nombre">
+    </div>
+    <div class="col">
+      <input type="text" class="form-control" placeholder="descripcion" formControlName="descripcion">
+    </div>
+    <div class="col">
+      <input type="number" class="form-control" placeholder="valor_min" formControlName="valor_min">
+    </div>
+    <div class="col">
+      <input type="number" class="form-control" placeholder="valor_max" formControlName="valor_max">
+    </div>
+    <div class="col">
+      <button class="btn btn-primary"><i class="far fa-save"></i> Registrar</button>
+    </div>
+
+  </div>
+</form>
+<span class="badge bg-danger m-1" *ngIf="submitted && formulario.invalid">Todos los campos son obligatorios</span>
+
