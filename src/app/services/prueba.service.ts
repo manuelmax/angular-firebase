@@ -15,8 +15,20 @@ export class PruebaService {
     return this.firestore.collection('pruebas').add(obj);
   }
 
+  get_prueba(id:string): Observable<any>{
+    return this.firestore.collection('pruebas').doc(id).snapshotChanges();
+  }
+
   get_pruebas():Observable<any>{
     //return this.firestore.collection('pruebas').snapshotChanges();
     return this.firestore.collection('pruebas', ref => ref.orderBy('nombre', 'desc')).snapshotChanges();
+  }
+
+  del_prueba(id:string): Promise<any> {
+    return this.firestore.collection('pruebas').doc(id).delete();
+  }
+
+  upd_prueba(id:string,data:any){
+    return this.firestore.collection('pruebas').doc(id).update(data);
   }
 }

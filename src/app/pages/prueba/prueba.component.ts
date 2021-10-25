@@ -5,7 +5,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 //models
 import {Prueba} from "../../models/prueba.model";
 import {PruebaService} from "../../services/prueba.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 
 @Component({
@@ -17,21 +17,28 @@ export class PruebaComponent implements OnInit {
 
   formulario: FormGroup;
   submitted = false;
+  id: string | null; // editar
 
-  constructor(private fb: FormBuilder, private _prueba_service: PruebaService, private router:Router, private toastr: ToastrService ) {
+  constructor(private fb: FormBuilder, private _prueba_service: PruebaService, private router:Router, private aRoute: ActivatedRoute,
+              private toastr: ToastrService ) {
+
     this.formulario = this.fb.group({
       code: ['', Validators.required],
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
       valor_min: ['', [Validators.required, Validators.min(0)]],
       valor_max: ['', [Validators.required,Validators.max(100)]]
-    })
+    });
+
+    this.id = this.aRoute.snapshot.paramMap.get('id'); // editar
   }
 
   ngOnInit(): void {
+    this.update_prueba();
   }
 
-  new_prueba(){
+  balancer(){
+    //para controlar el estado del formulario en consola del browser
     console.log(this.formulario);
     this.submitted = true;
     //if(this.formulario.valid){
@@ -40,13 +47,22 @@ export class PruebaComponent implements OnInit {
     if(this.formulario.invalid){
       return;
     }
+    if(this.id === null){
+      this.add_prueba();
+    }else{
+      this.update_prueba();
+    }
+
+  }
+
+  add_prueba(){
     const prueba =  new Prueba(
      this.formulario.value.code,
       this.formulario.value.nombre,
       this.formulario.value.descripcion,
       this.formulario.value.valor_min,
       this.formulario.value.valor_max
-    )
+    );
     console.log(prueba);
     this._prueba_service.set_prueba(prueba).then( ()=>{
       console.log('prueba insertada...');
@@ -54,7 +70,24 @@ export class PruebaComponent implements OnInit {
       this.router.navigate(['/pruebas']);
     }).catch(error =>{
       console.log(error);
-    })
+    });
+  }
+
+  update_prueba(){
+    if(this.id !== null){
+      // is es Observale hay que subscribirse
+      this._prueba_service.get_prueba(this.id).subscribe( data =>{
+        console.log(data);
+        let prueba =  new Prueba(
+         data.snapshot.data()['code'],
+          data.snapshot.data()['nombre'],
+          data.snapshot.data()['descripcion'],
+          data.snapshot.data()['valor_min'],
+          data.snapshot.data()['valor_max']
+        );
+        this.formulario.setValue(prueba);
+      } );
+    }
   }
 
 }

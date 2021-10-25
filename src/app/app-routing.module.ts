@@ -7,6 +7,7 @@ import {PruebasComponent} from "./components/pruebas/pruebas.component";
 const routes: Routes = [
   {path: 'examen', component: ExamenComponent},
   {path: 'prueba', component: PruebaComponent},
+  {path: 'prueba/edit/:id', component: PruebaComponent},
   {path: 'pruebas', component: PruebasComponent}
 ];
 
