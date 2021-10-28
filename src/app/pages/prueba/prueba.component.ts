@@ -30,11 +30,11 @@ export class PruebaComponent implements OnInit {
       valor_max: ['', [Validators.required,Validators.max(100)]]
     });
 
-    this.id = this.aRoute.snapshot.paramMap.get('id'); // editar
+    this.id = this.aRoute.snapshot.paramMap.get('id'); // editar, se obtiene id de la url
   }
 
   ngOnInit(): void {
-    this.update_prueba();
+    this.edit_prueba();
   }
 
   balancer(){
@@ -74,20 +74,38 @@ export class PruebaComponent implements OnInit {
   }
 
   update_prueba(){
+    console.log('update prueba...');
     if(this.id !== null){
-      // is es Observale hay que subscribirse
+       const prueba =  new Prueba(
+       this.formulario.value.code,
+        this.formulario.value.nombre,
+        this.formulario.value.descripcion,
+        this.formulario.value.valor_min,
+        this.formulario.value.valor_max
+      );
+      this._prueba_service.update_prueba(this.id, prueba).then( ()=>{
+        this.toastr.info('Actualizada con éxito', 'Prueba actualizada');
+      });
+    }
+  }
+
+  edit_prueba(){
+    console.log('editar prueba...');
+    if(this.id !== null){
+      // si es Observale hay que subscribirse
       this._prueba_service.get_prueba(this.id).subscribe( data =>{
-        console.log(data);
         let prueba =  new Prueba(
-         data.snapshot.data()['code'],
-          data.snapshot.data()['nombre'],
-          data.snapshot.data()['descripcion'],
-          data.snapshot.data()['valor_min'],
-          data.snapshot.data()['valor_max']
+         data.payload.data()['code'],
+          data.payload.data()['nombre'],
+          data.payload.data()['descripcion'],
+          data.payload.data()['valor_min'],
+          data.payload.data()['valor_max']
         );
         this.formulario.setValue(prueba);
       } );
     }
   }
+
+
 
 }
